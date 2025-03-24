@@ -11,7 +11,7 @@ const publicClient = createPublicClient({
   transport,
 })
 
-const account = privateKeyToAccount('0xa3f73db07859670fa5f7de20ce77d6ef872934f8a3fb978841321125dd31b392')
+const account = privateKeyToAccount('')
 const walletClient = createWalletClient({
   account,
   chain,
@@ -26,14 +26,37 @@ const sdk = new BasedAppsSDK({
 
 async function main(): Promise<void> { 
 
-  const result = await sdk.contracts.bapp.write
-  .updateAccountMetadataURI({
-    args: {
-      metadataURI: 'https://example.com/metadata',
+  const tokenCoefficient: Array<{ token: `0x${string}`; coefficient: number }> = [
+    {
+      token: "0x3f1c547b21f65e10480de3ad8e19faac46c95034" as `0x${string}`,
+      coefficient: 5,
     },
-  })
-  .then((tx) => tx.wait())
-console.log(result)
+  ] as const;
+  const validatorCoefficient = 1;
+
+  const strategyTokenWeights = await sdk.api.getParticipantWeights({
+    bAppId: "0x4f0f5ab30f62b62ed0466b697f0ec7b30560ee48",
+  });
+
+  console.log(strategyTokenWeights);
+
+  const weightCalculationOptions =    {
+      coefficients: tokenCoefficient,
+      validatorCoefficient: validatorCoefficient,
+  }
+
+  const arithmeticStrategyWeights = sdk.utils.calcArithmeticStrategyWeights(strategyTokenWeights, weightCalculationOptions);
+  console.info(JSON.stringify(arithmeticStrategyWeights));
+
+  /*
+  const receipt = await sdk.core.contracts.bapp.write.createStrategy({
+    args: {
+        fee: 10000,
+        metadataURI: "https://example.com/metadata",
+    },
+}).then((tx) => tx.wait())
+console.log(receipt)
+*/
 }
 
 main();

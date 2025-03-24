@@ -1,9 +1,13 @@
 {
   "dependencies": {
-    "@ssv-labs/bapps-sdk": "git+https://github.com/ssvlabs/based-apps-sdk.git#feature/milestone-4",
+    "@ssv-labs/bapps-sdk": "^0.0.5",
+    "dotenv": "^16.4.7",
     "viem": "^2.23.10"
   },
   "compilerOptions": {
     "module": "CommonJS"
+  },
+  "devDependencies": {
+    "ts-node": "^10.9.2"
   }
 }
